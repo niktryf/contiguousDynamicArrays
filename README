@@ -1,0 +1,42 @@
+--- Contiguous 2D:
+--- A 2D dynamic contiguous array allocator in C.
+
+-------------------------------------------------------------------------
+Introduction:
+The current program is a 2D dynamic array allocator that allocates 
+contiguous arrays in memory. Contiguous arrays are useful, not only 
+for better cache memory access, but also for MPI applications that 
+need contiguous memory for sending and receiving data between processes.
+
+The current program allocates a 2D array of doubles; changing this to 
+whatever type the user may need is trivial.
+
+-------------------------------------------------------------------------
+Functions:
+
+ - "double **array2D_contiguous (int nRows, int nCols)"
+Allocates a 2D array of given dimensions, contiguous in memory, initializes 
+it to zero and returns a pointer to it.
+
+The method used to allocate contiguous memory is the following. First, 
+an array of pointers to pointers is allocated, of size 'nRows' (of type double*). 
+Each pointer in this array will point to a different row of the 2D array.
+
+Then, memory for the whole 2D array is allocated, of size nRows*nCols. The first
+pointer of the pointers array is pointed to the beginning of this memory chunk.
+
+Finally, we go through the remaining pointers and point each one to the 
+chunk memory element [nCols] elements away.
+
+This way, the 2D array can be accessed in the useful way of two indices:
+                            array[i][j]
+
+ - "double **free_array2D_contiguous (int nRows, int nCols)" 
+Frees data allocated by the allocator. Frees both the chunk and the pointer
+arrays.
+
+The functions have been checked with Valgrind for memory leaks and where
+found to free of leaks.
+
+-------------------------------------------------------------------------
+
