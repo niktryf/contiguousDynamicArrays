@@ -1,42 +1,38 @@
---- Contiguous 2D:
---- A 2D dynamic contiguous array allocator in C.
+--- Contiguous:
+--- A 2D & 3D dynamic contiguous array allocator in C.
 
 -------------------------------------------------------------------------
 Introduction:
-The current program is a 2D dynamic array allocator that allocates 
+The current program is a 2D & 3D dynamic array allocator that allocates 
 contiguous arrays in memory. Contiguous arrays are useful, not only 
 for better cache memory access, but also for MPI applications that 
 need contiguous memory for sending and receiving data between processes.
 
-The current program allocates a 2D array of doubles; changing this to 
+Arrays are created so that elements can be accessed using indices according 
+to the dimensions. For example, a[i][j] for 2D and a[i][j][k] for 3D.
+
+The current program allocates a 2D / 3D array of doubles; changing this to 
 whatever type the user may need is trivial.
+
+The functions have been checked with Valgrind for memory leaks and were
+found to be free of leaks.
 
 -------------------------------------------------------------------------
 Functions:
 
- - "double **array2D_contiguous (int nRows, int nCols)"
-Allocates a 2D array of given dimensions, contiguous in memory, initializes 
-it to zero and returns a pointer to it.
+  2D
+  - array2D_contiguous_double: allocates 2D of given dimensions and initializes 
+    to zero.
 
-The method used to allocate contiguous memory is the following. First, 
-an array of pointers to pointers is allocated, of size 'nRows' (of type double*). 
-Each pointer in this array will point to a different row of the 2D array.
+  - free_array2D_contiguous_double: frees memory allocated by 
+    array2D_contiguous_double.
 
-Then, memory for the whole 2D array is allocated, of size nRows*nCols. The first
-pointer of the pointers array is pointed to the beginning of this memory chunk.
+  3D
+  - array3D_contiguous_double: allocates 3D of given dimensions and initializes 
+    to zero.
 
-Finally, we go through the remaining pointers and point each one to the 
-chunk memory element [nCols] elements away.
-
-This way, the 2D array can be accessed in the useful way of two indices:
-                            array[i][j]
-
- - "double **free_array2D_contiguous (int nRows, int nCols)" 
-Frees data allocated by the allocator. Frees both the chunk and the pointer
-arrays.
-
-The functions have been checked with Valgrind for memory leaks and where
-found to free of leaks.
+  - free_array3D_contiguous_double: frees memory allocated by 
+    array3D_contiguous_double.
 
 -------------------------------------------------------------------------
 
